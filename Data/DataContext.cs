@@ -9,7 +9,7 @@ namespace aprendendoAPI.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("");
+            optionsBuilder.UseSqlServer("Server=W-PC;Database=aprendendo;User ID=sa; Password=123;");
         }
     }
 
