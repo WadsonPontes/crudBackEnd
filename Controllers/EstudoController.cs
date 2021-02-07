@@ -27,9 +27,8 @@ namespace aprendendoAPI.Controllers
         [Route("{id:int}")]
         public async Task<ActionResult<Estudo>> Detalhar([FromServices] DataContext context, int id)
         {
-            var estudo = await context.Estudos
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var estudo = await context.Estudos.FindAsync(id);
+            
             return estudo;
         }
 
@@ -50,9 +49,10 @@ namespace aprendendoAPI.Controllers
         }
 
         [HttpPut]
-        [Route("editar")]
+        [Route("{id:int}/editar")]
         public async Task<ActionResult<Estudo>> Editar(
             [FromServices] DataContext context,
+            int id,
             [FromBody]Estudo estudo)
         {
              if (ModelState.IsValid) {
@@ -67,21 +67,17 @@ namespace aprendendoAPI.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<ActionResult<Estudo>> Apagar(
-            [FromServices] DataContext context, int id)
+        public async Task<ActionResult<Estudo>> Apagar([FromServices] DataContext context, int id)
         {
-             if (ModelState.IsValid) {
-                Estudo estudo = await context.Estudos
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == id);
+            Estudo estudo = await context.Estudos.FindAsync(id);
 
-                context.Estudos.Remove(estudo);
-                await context.SaveChangesAsync();
-                return estudo;
+            if (estudo == null) {
+                return BadRequest();               
             }
-            else {
-                return BadRequest(ModelState);
-            }
+
+            context.Estudos.Remove(estudo);
+            await context.SaveChangesAsync();
+            return estudo;
         }
     }
 }
